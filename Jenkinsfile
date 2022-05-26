@@ -1,10 +1,9 @@
 def containerName="springbootdockerproj"
 def tag="latest"
 def dockerHubUser="siva2011"
-def gitURL="https://github.com/sivag4/Springbootdockerproj.git"
+def gitURL="https://github.com/sivag4/Springbootdockerproject.git"
 
 node {
-	def sonarscanner = tool name: 'SonarQubeScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
     stage('Checkout') {
         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: gitURL]]]
     }
@@ -31,13 +30,4 @@ node {
         }
     }
 	
-	stage("SonarQube Scan"){
-        withSonarQubeEnv(credentialsId: 'SonarQubeToken') {
-			sh "${sonarscanner}/bin/sonar-scanner"
-		}
-    }
-	
-	stage("Ansible Deploy"){
-        ansiblePlaybook inventory: 'hosts', playbook: 'deploy.yaml'
-    }
 }
